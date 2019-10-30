@@ -31,8 +31,8 @@ def sottrazione_fondo(file_path,source_path):
         print(type(data_time_fondo))'''
 
 
-   t_source = 621.739986         #tempo exp. sorgente
-   t_fondo = 1581.579965         #tempo exp. fondo         
+   t_source = 571.479987         #tempo exp. sorgente
+   t_fondo = 51600.458847         #tempo exp. fondo         
    #data=(621.739986/1581.579965)*data
    data=(t_source/t_fondo)*data
 
@@ -43,14 +43,19 @@ def sottrazione_fondo(file_path,source_path):
    
 
    x=np.linspace(0,2050,2050)
-   plt.figure('data_finale')
-   plt.plot(x,data_source,label='sorgente', alpha=0.6, color='purple')
-   plt.plot(x,data, label='fondo', alpha=0.6, color='red')
-   plt.plot(x,data_fin, label='sorgente - fondo', color='blue')
+   '''plt.figure('fondo')
+   plt.plot(x,data, label='fondo', color='red')
    plt.grid()
-   plt.legend()
+   plt.legend()'''
 
-   def covell(m, first_extreme, last_extreme, y):
+   #plt.figure('data_finale')
+   #plt.plot(x,data_source,label='sorgente', alpha=0.6, color='purple')
+   #plt.plot(x,data, label='fondo', alpha=0.6, color='red')
+   #plt.plot(x,data_fin, label='sorgente - fondo', color='blue')
+   #plt.grid()
+   #plt.legend()
+
+   '''def covell(m, first_extreme, last_extreme, y):
       c_a=y[first_extreme]
       c_b=y[last_extreme]
       n=last_extreme-first_extreme
@@ -74,7 +79,7 @@ def sottrazione_fondo(file_path,source_path):
          print('There is an error, m_value must be between 5 and 10!!!')
    
 
-   area=covell(10,763,1063,data_fin)
+   area=covell(10,763,1063,data_fin)'''
 
    
    
@@ -96,17 +101,17 @@ def sottrazione_fondo(file_path,source_path):
 
    
    #fitting...
-   ydata = data_fin[763:1063]
-   xdata = x[763:1063]
+   ydata = data_fin[10:150]
+   xdata = x[10:150]
    def gaussian(x, a, mu, sigma):
       return a/(sigma*np.sqrt(2*np.pi))*(np.exp(-np.power(x - mu, 2.) / (2 * np.power(sigma, 2.))))
 
-   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[4000,930,30])
+   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[10000,55,9])
    print(' i parametri stimati sono (a, mu, sigma)',popt)
    print(' le relative incertezze sono di ',np.sqrt(pcov.diagonal()))
 
 
-   _x = np.linspace(763, 1063, 300)
+   _x = np.linspace(10, 150, 140)
    _y = gaussian(_x, *popt)
    plt.figure('fit')
    plt.plot(x,data_fin, label='sorgente-fondo', alpha=1)

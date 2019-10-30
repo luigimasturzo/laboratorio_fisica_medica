@@ -12,7 +12,8 @@ logging.basicConfig(level=logging.INFO)
 #le x sono i canali
 #y energie
 
-x=np.array([60,511,662,1174,1274,1332])   #americio, sodio, cesio, cobalto, sodio, cobalto
+#x=np.array([60,511,662,1174,1274,1332])   #americio, sodio, cesio, cobalto, sodio, cobalto
+x=np.array([60,662,1174,1332])
 y=np.array([])
 sigma_y=np.array([])
 
