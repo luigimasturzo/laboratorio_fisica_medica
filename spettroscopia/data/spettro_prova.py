@@ -23,37 +23,24 @@ def sottrazione_fondo(file_path,source_path):
    logging.info('Done. {} data found in source file'.format(len(data_source))) 
 
 
-
-
-   '''with open(file_path) as imput_file:                                              
-        data_time_fondo=imput_file.read()
-        print (data_time_fondo)
-        print(type(data_time_fondo))'''
-
-
-   t_source = 571.479987         #tempo exp. sorgente
+   t_source = 4005.979910          #tempo exp. sorgente
    t_fondo = 51600.458847         #tempo exp. fondo         
-   #data=(621.739986/1581.579965)*data
    data=(t_source/t_fondo)*data
 
    data_fin=data_source-data
    data_zero=np.zeros(len(data_fin))
-   data_fin=np.where(data>=0 , data_fin, data_zero )
+   data_fin=np.where(data_fin>=0 , data_fin, data_zero )
 
    
 
    x=np.linspace(0,2050,2050)
-   '''plt.figure('fondo')
-   plt.plot(x,data, label='fondo', color='red')
-   plt.grid()
-   plt.legend()'''
 
-   #plt.figure('data_finale')
+   plt.figure('data_finale')
    #plt.plot(x,data_source,label='sorgente', alpha=0.6, color='purple')
    #plt.plot(x,data, label='fondo', alpha=0.6, color='red')
-   #plt.plot(x,data_fin, label='sorgente - fondo', color='blue')
-   #plt.grid()
-   #plt.legend()
+   plt.plot(x,data_fin, label='sorgente - fondo', color='blue')
+   plt.grid()
+   plt.legend()
 
    '''def covell(m, first_extreme, last_extreme, y):
       c_a=y[first_extreme]
@@ -101,29 +88,39 @@ def sottrazione_fondo(file_path,source_path):
 
    
    #fitting...
-   ydata = data_fin[10:150]
-   xdata = x[10:150]
+   ''' indico con primo e secondo estremo gli estremi su cui voglio fare il fit
+   '''
+   #cesio-> 890-980
+   #americio->30-80
+   #cobalto->1590-1730
+
+   primo_ext=1800
+   secondo_ext=1995
+   diff=secondo_ext-primo_ext
+
+   ydata = data_fin[primo_ext:secondo_ext]
+   xdata = x[primo_ext:secondo_ext]
    def gaussian(x, a, mu, sigma):
       return a/(sigma*np.sqrt(2*np.pi))*(np.exp(-np.power(x - mu, 2.) / (2 * np.power(sigma, 2.))))
 
-   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[10000,55,9])
+   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[11000,1873,30])
    print(' i parametri stimati sono (a, mu, sigma)',popt)
+   print(' i parametri stimati sono a = {} , mu =  {}, sigma = {}'.format(popt[0],popt[1],popt[2]))
+
    print(' le relative incertezze sono di ',np.sqrt(pcov.diagonal()))
 
 
-   _x = np.linspace(10, 150, 140)
+   _x = np.linspace(primo_ext, secondo_ext, diff)
    _y = gaussian(_x, *popt)
    plt.figure('fit')
    plt.plot(x,data_fin, label='sorgente-fondo', alpha=1)
    plt.plot(_x, _y, label='fit')
-   #plt.text(1270,450,'mu = {}'.format(popt[1]))
    plt.legend()
    plt.grid()
 
-   #mask = ydata > 0
-   #chi2 = sum(((ydata- gaussian(xdata, *popt)) / np.sqrt(ydata))**2.)
-   chi2 = sum(((ydata-gaussian(xdata, *popt))**2)/(ydata))
-   nu = len(xdata) - 3
+   mask = ydata > 0
+   chi2 = sum(((ydata[mask] - gaussian(xdata[mask], *popt)) / np.sqrt(ydata[mask]))**2.)
+   nu = mask.sum() - 3
    sigma = np.sqrt(2 * nu)
    print('chi2_norm = {} , dof = {}, incetezza chi2 = {}'.format(chi2/nu, nu, sigma/nu))
 
