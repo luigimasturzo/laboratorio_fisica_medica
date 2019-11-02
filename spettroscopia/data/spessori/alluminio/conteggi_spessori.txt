@@ -1,0 +1,13 @@
+# Conteggi vs Spessore
+# spessore [cm]
+# conteggi
+# [0]*exp(-x*[1])
+# normalizzazione coefficiente di assorbimento
+# 90000 0.0189
+# yerr
+2           59769.42442193872       
+4           39831.829891660236      
+#6           
+7.55        18926.02974941075       
+8.03        16193.515991287251      
+10.04       10951.630110660497      

@@ -23,9 +23,13 @@ def sottrazione_fondo(file_path,source_path):
    logging.info('Done. {} data found in source file'.format(len(data_source))) 
 
 
-   t_source = 4005.979910          #tempo exp. sorgente
+   t_source = 1555.319965          #tempo exp. sorgente
    t_fondo = 51600.458847         #tempo exp. fondo         
    data=(t_source/t_fondo)*data
+
+   #serve per il file con spessore da 10, per risalcare il tempo
+   t_sorgente_prova=3251.739927
+   data_source=data_source*(t_source/t_sorgente_prova)
 
    data_fin=data_source-data
    data_zero=np.zeros(len(data_fin))
@@ -42,7 +46,7 @@ def sottrazione_fondo(file_path,source_path):
    plt.grid()
    plt.legend()
 
-   '''def covell(m, first_extreme, last_extreme, y):
+   def covell(m, first_extreme, last_extreme, y):
       c_a=y[first_extreme]
       c_b=y[last_extreme]
       n=last_extreme-first_extreme
@@ -50,8 +54,9 @@ def sottrazione_fondo(file_path,source_path):
          f_covell=((c_a+c_b)/2)*n
          area_netta=sum(y[first_extreme:last_extreme])-f_covell
          print(sum(y[first_extreme:last_extreme]))
+         varianza=np.sqrt(sum(y[first_extreme:last_extreme])+f_canali*n/2)
          
-         print('n_channels = {}, f_covell = {}, net_area_value = {}'.format(n, f_covell, area_netta))
+         print('n_channels = {}, f_covell = {}, net_area_value = {} +/- {}'.format(n, f_covell, area_netta, varianza))
          return area_netta
       elif (m<=10 and m>=5):
         # c_a1=y[first_extreme-m]
@@ -60,13 +65,14 @@ def sottrazione_fondo(file_path,source_path):
          m_f=(1/m)*sum(y[last_extreme:last_extreme+m])
          f_canali=((m_i+m_f)/2)*n
          area_netta=sum(y[first_extreme:last_extreme])-f_canali
-         print('n_value = {}, f_covell_ch = {}, net_area_value = {}'.format(n, f_canali, area_netta))
+         varianza=np.sqrt(sum(y[first_extreme:last_extreme])+f_canali*n/(2*m))
+         print('n_value = {}, f_covell_ch = {}, net_area_value = {} +/- {}'.format(n, f_canali, area_netta, varianza))
          return area_netta
       else:
          print('There is an error, m_value must be between 5 and 10!!!')
    
 
-   area=covell(10,763,1063,data_fin)'''
+   area=covell(10,834,1020,data_fin)
 
    
    
@@ -94,8 +100,8 @@ def sottrazione_fondo(file_path,source_path):
    #americio->30-80
    #cobalto->1590-1730
 
-   primo_ext=1800
-   secondo_ext=1995
+   '''primo_ext=890
+   secondo_ext=980
    diff=secondo_ext-primo_ext
 
    ydata = data_fin[primo_ext:secondo_ext]
@@ -103,7 +109,7 @@ def sottrazione_fondo(file_path,source_path):
    def gaussian(x, a, mu, sigma):
       return a/(sigma*np.sqrt(2*np.pi))*(np.exp(-np.power(x - mu, 2.) / (2 * np.power(sigma, 2.))))
 
-   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[11000,1873,30])
+   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[11000,900,30])
    print(' i parametri stimati sono (a, mu, sigma)',popt)
    print(' i parametri stimati sono a = {} , mu =  {}, sigma = {}'.format(popt[0],popt[1],popt[2]))
 
@@ -122,7 +128,7 @@ def sottrazione_fondo(file_path,source_path):
    chi2 = sum(((ydata[mask] - gaussian(xdata[mask], *popt)) / np.sqrt(ydata[mask]))**2.)
    nu = mask.sum() - 3
    sigma = np.sqrt(2 * nu)
-   print('chi2_norm = {} , dof = {}, incetezza chi2 = {}'.format(chi2/nu, nu, sigma/nu))
+   print('chi2_norm = {} , dof = {}, incetezza chi2 = {}'.format(chi2/nu, nu, sigma/nu))'''
 
 
 
