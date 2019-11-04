@@ -100,7 +100,7 @@ def efficienza_intrinseca(m,n,d,r,l):     #esiste di sicuro una cosa piu efficie
 
             R = r + 0.01 * (1-2*random.random())
             L = l + 0.1 * (1-2*random.random())
-            D = d + 0.1 * (1-2*random.random())
+            D = d + 0.01 * (1-2*random.random())
             theta_max=np.arctan((R)/(L+D))
             phi_max=np.arctan((R)/(L+D))
 
@@ -132,9 +132,10 @@ def efficienza_intrinseca(m,n,d,r,l):     #esiste di sicuro una cosa piu efficie
         def gaussian(x, a, mu, sigma):
             return a/(sigma*np.sqrt(2*np.pi))*(np.exp(-np.power(x - mu, 2.) / (2 * np.power(sigma, 2.))))
 
-        popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[0.1,0.0002, 0.00001])
-        print(' i parametri trovati sono (a, mu, sigma)',popt*100)
+        popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[100,0.00075, 0.00001])
+        print(' i parametri trovati sono (a, mu, sigma)',popt)
         print(' le relative incertezze sono di ',np.sqrt(pcov.diagonal()))
+        print(1/popt[1])
         _x = np.linspace(0, 0.0005, 500)
         _y = gaussian(_x, *popt)
         #plt.figure('gauss_fit')
@@ -147,7 +148,7 @@ def efficienza_intrinseca(m,n,d,r,l):     #esiste di sicuro una cosa piu efficie
         print('chi2, dof, incetezza chi2',chi2, nu, sigma)
     
     else:
-        print (len(vagone_finale[mask_fin])/(2*n))
+        #print (len(vagone_finale[mask_fin])/(2*n))
         #print (len(vagone_finale[mask_fin])/(n))
         #print('l accettanza stimata per il rivelatore {} è di {} '.format(NaI.name,len(vagone_finale[mask_fin])/n))
         #print('stimata in un tempo di {} s'.format(time.time()-t0))
@@ -162,9 +163,9 @@ def efficienza_intrinseca(m,n,d,r,l):     #esiste di sicuro una cosa piu efficie
         
 
 if __name__ == '__main__':
-    NaI = Rivelatore_cilindrico('NaI',0.5,20,2)
+    NaI = Rivelatore_cilindrico('NaI',0.25,8,1.7)
     #Cs137=Sorgente('Cesio_137', 53.9, 952092792, 662, 0)
-    accettanza=efficienza_intrinseca(3*10**5,10**4,NaI.distance,NaI.radius,NaI.lunghezza)
+    accettanza=efficienza_intrinseca(10**4,10**6,NaI.distance,NaI.radius,NaI.lunghezza)
 
     plt.show()
 

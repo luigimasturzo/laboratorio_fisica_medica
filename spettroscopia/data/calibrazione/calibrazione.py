@@ -9,8 +9,8 @@ import logging
 from scipy.optimize import curve_fit                                                     
 logging.basicConfig(level=logging.INFO)    
 
-#le x sono i canali
-#y energie
+#le x energie
+#y canali
 
 #x=np.array([60,511,662,1174,1274,1332])   #americio,sodio, cesio, cobalto, sodio, cobalto
 x=np.array([54.86,662,1174,1332])
