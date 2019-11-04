@@ -34,13 +34,31 @@ plt.grid()
 plt.legend()
 
 
+#Risoluzione enrgetica = 2.36*sigma/mu
+risoluzione=2.36*sigma_y/y
+energia_stupida=1/(np.sqrt(x))
+def rad(x, m, a):
+    return m/(x**a)
+
+popt, pcov = curve_fit(rad, x, risoluzione, p0=[1.,0.5])
+print(' i parametri trovati sono ( emmm , aaa )',popt)
+print(' le relative incertezze sono di ',np.sqrt(pcov.diagonal()))
+plt.figure('risoluzione enrgetica')
+plt.plot(x,risoluzione,'.')
+_x = np.linspace(0, 1500, 1500)
+_y = rad(_x, *popt)
+plt.plot(_x, _y, label ='fit', alpha=0.8)
 
 
 
-chi2 = sum(((y - linear(x, *popt)) / (sigma_y)**2.)
-nu = 2
-sigma_chi2 = np.sqrt(2 * nu)
-print('chi2, dof, incetezza chi2',chi2, nu, sigma_chi2)
-print('chi2_red, dof, incetezza chi2_red',chi2/nu, nu, sigma_chi2/nu)
+
+
+
+'''chi2 = sum(((y - linear(x, *popt)) / (sigma_y)**2.)
+
+nus = 2
+sigma_chi2 = np.sqrt(2 * nus)
+print('chi2, dof, incetezza chi2',chi2, nus, sigma_chi2)
+print('chi2_red, dof, incetezza chi2_red',chi2/nus, nus, sigma_chi2/nus)'''
 
 plt.show()
