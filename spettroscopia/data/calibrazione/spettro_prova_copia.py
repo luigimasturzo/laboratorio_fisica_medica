@@ -18,12 +18,12 @@ def sottrazione_fondo(file_path,source_path):
    data=data.transpose().flatten()
    logging.info('Done. {} data found in background file'.format(len(data))) 
 
-   data_source=np.loadtxt(source_path,skiprows=26, usecols=[1,2,3,4,5], unpack=True)
-   data_source=data_source.transpose().flatten()
+   data_source=np.loadtxt(source_path,skiprows=16, unpack=True)
+   #data_source=data_source.transpose().flatten()
    logging.info('Done. {} data found in source file'.format(len(data_source))) 
 
 
-   t_source = 888.079980         #tempo exp. sorgente
+   t_source = 3103.60         #tempo exp. sorgente
    t_fondo = 51600.458847         #tempo exp. fondo         
    data=(t_source/t_fondo)*data
 
@@ -36,24 +36,14 @@ def sottrazione_fondo(file_path,source_path):
    x=np.linspace(0,2050,2050)
    
 
-   '''plt.figure('dati sorgente')
-   plt.plot(x,data_source,label='sorgente', alpha=0.3, color='purple')'''
-   '''plt.xlabel(' canali ')
-   plt.ylabel(' conteggi' )
-   plt.grid()
-   plt.legend()
-   plt.figure('dati fondo')'''
-   '''plt.plot(x,data, label='fondo', alpha=0.3, color='red')'''
-   '''plt.xlabel(' canali ')
-   plt.ylabel(' conteggi' )
-   plt.grid()
-   plt.legend()
-   plt.figure('dati sorgente-fondo')'''
-   '''plt.plot(x,data_fin, label='sorgente - fondo', color='blue')
+   plt.figure('data_finale')
+   plt.plot(x,data_source,label='sorgente', alpha=0.3, color='purple')
+   plt.plot(x,data, label='fondo', alpha=0.3, color='red')
+   plt.plot(x,data_fin, label='sorgente - fondo', color='blue')
    plt.xlabel(' canali ')
    plt.ylabel(' conteggi' )
    plt.grid()
-   plt.legend()'''
+   plt.legend()
 
    def covell(m, first_extreme, last_extreme, y):
       c_a=y[first_extreme]
@@ -81,7 +71,7 @@ def sottrazione_fondo(file_path,source_path):
          print('There is an error, m_value must be between 5 and 10!!!')
    
 
-   area=covell(10,1790,1958,data_fin)
+   area=covell(10,1682,1928,data_fin)
 
    
    
@@ -109,9 +99,10 @@ def sottrazione_fondo(file_path,source_path):
    #cesio-> 890-980
    #americio->30-80
    #cobalto->1590-1730
+   #sodio->
 
-   primo_ext=890
-   secondo_ext=980
+   primo_ext=1700
+   secondo_ext=1910
    diff=secondo_ext-primo_ext
 
    ydata = data_fin[primo_ext:secondo_ext]
@@ -119,7 +110,7 @@ def sottrazione_fondo(file_path,source_path):
    def gaussian(x, a, mu, sigma):
       return a/(sigma*np.sqrt(2*np.pi))*(np.exp(-np.power(x - mu, 2.) / (2 * np.power(sigma, 2.))))
 
-   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[11000,933.62,29])
+   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[11000,1805,40.98])
    print(' i parametri stimati sono (a, mu, sigma)',popt)
    print(' i parametri stimati sono a = {} , mu =  {}, sigma = {}'.format(popt[0],popt[1],popt[2]))
 
@@ -129,10 +120,8 @@ def sottrazione_fondo(file_path,source_path):
    _x = np.linspace(primo_ext, secondo_ext, diff)
    _y = gaussian(_x, *popt)
    plt.figure('fit')
-   plt.plot(x,data_fin, label='sorgente-fondo', alpha=0.8)
+   plt.plot(x,data_fin, label='sorgente-fondo', alpha=1)
    plt.plot(_x, _y, label='fit')
-   plt.xlabel(' Canali ')
-   plt.ylabel(' Conteggi ')
    plt.legend()
    plt.grid()
 

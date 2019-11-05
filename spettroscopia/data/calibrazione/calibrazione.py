@@ -13,11 +13,15 @@ logging.basicConfig(level=logging.INFO)
 #y canali
 
 #x=np.array([60,511,662,1174,1274,1332])   #americio,sodio, cesio, cobalto, sodio, cobalto
-x=np.array([54.86,662,1174,1332])
-y=np.array([55.19,933.62,1651.43,1874.03])
-sigma_y=np.array([10.62,29.46,43.09,41.98])
+x=np.array([59.5409,511,662,1174,1274,1332])
+y=np.array([55.19,722.83,933.62,1651.43,1805.08,1874.03])
+sigma_y=np.array([10.62,28.10,29.46,43.09,40.98,41.98])
+usigma=np.array([0.8,0.3,0.3,0.4,0.4,0.3])
+umu=np.array([0.8,0.2,0.2,0.3,0.4,0.3])
 
-def linear(x, m, a):
+urisoluzione=2.35*np.sqrt((usigma/y)**2 + (sigma_y*umu/(y**2))**2)
+
+'''def linear(x, m, a):
     return m*x+a
 
 popt, pcov = curve_fit(linear, x, y,sigma=sigma_y, p0=[1.,0.])
@@ -26,12 +30,12 @@ print(' le relative incertezze sono di ',np.sqrt(pcov.diagonal()))
 _x = np.linspace(0, 1500, 1500)
 _y = linear(_x, *popt)
 plt.figure('calibration fit')
-plt.plot(_x, _y, label ='fit', alpha=0.8)
-plt.errorbar(x,y,yerr=sigma_y, label='data',fmt='.')
-plt.xlabel('Energy ( KeV )')
-plt.ylabel('channel')
+plt.plot(_x, _y, label ='fit', alpha=0.9)
+plt.errorbar(x,y,yerr=sigma_y,label='dati',fmt='.')
+plt.xlabel(' Energia ( KeV ) ')
+plt.ylabel(' Canali ')
 plt.grid()
-plt.legend()
+plt.legend()'''
 
 
 #Risoluzione enrgetica = 2.36*sigma/mu
@@ -44,21 +48,34 @@ popt, pcov = curve_fit(rad, x, risoluzione, p0=[1.,0.5])
 print(' i parametri trovati sono ( emmm , aaa )',popt)
 print(' le relative incertezze sono di ',np.sqrt(pcov.diagonal()))
 plt.figure('risoluzione enrgetica')
-plt.plot(x,risoluzione,'.')
-_x = np.linspace(0, 1500, 1500)
+_x = np.linspace(50, 1500, 1450)
 _y = rad(_x, *popt)
 plt.plot(_x, _y, label ='fit', alpha=0.8)
+#plt.plot(x,risoluzione,'.')
+plt.errorbar(x,risoluzione,yerr=urisoluzione,xerr=umu,label='dati',fmt='.')
+plt.xlabel(' Energia ( KeV ) ')
+plt.ylabel(' R ')
+plt.grid()
+plt.legend()
+print(risoluzione)
+print(urisoluzione)
 
 
 
 
 
 
-'''chi2 = sum(((y - linear(x, *popt)) / (sigma_y)**2.)
+'''chi2 = sum(((y - linear(x, *popt)) / (sigma_y))**2.)
+print(chi2)'''
+chi3 = sum(((risoluzione - rad(x, *popt)) / (urisoluzione))**2.)
+print(chi3/4)
 
-nus = 2
-sigma_chi2 = np.sqrt(2 * nus)
-print('chi2, dof, incetezza chi2',chi2, nus, sigma_chi2)
-print('chi2_red, dof, incetezza chi2_red',chi2/nus, nus, sigma_chi2/nus)'''
+
+
+
+
+'''sigma_chi2 = np.sqrt(2 * nu)
+print('chi2, dof, incetezza chi2',chi2, nu, sigma_chi2)
+print('chi2_red, dof, incetezza chi2_red',chi2/nu, nu, sigma_chi2/nu)'''
 
 plt.show()

@@ -1,0 +1,24 @@
+risultati chi2
+
+americio 2.49      27
+sodio  1.720        87
+cesio   1.17        87
+cobalto 1.32        147
+sodio   1.08        207
+cobalto 1.37        171
+
+
+
+
+
+risultati calibrazione -> y=mx+q       m=1.438 pm 0.0002   q=-28.43 pm 04           chi2=0.62
+
+risultati risoluzione y=a/x**t          a=8.48 pm 0.6       t=0.71 pm 0.01          chi2=110
+
+risoluzione e incertezza
+[0.45412575 0.09174495 0.07446884 0.06157839 0.05357812 0.05286618]
+[0.03468907 0.00097566 0.00075529 0.00056931 0.00052089 0.00037629]
+
+
+
+
