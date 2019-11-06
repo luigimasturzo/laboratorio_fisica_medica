@@ -6,8 +6,8 @@ import time
 import os
 import argparse
 import logging
-from scipy.optimize import curve_fit                                                     
-logging.basicConfig(level=logging.INFO)    
+from scipy.optimize import curve_fit
+logging.basicConfig(level=logging.INFO)
 
 def andamento(file_path):
 
@@ -27,6 +27,8 @@ def andamento(file_path):
     plt.figure('fit')
     plt.errorbar(data[0], data[1], data[3],data[2], fmt='.', label='dati')
     plt.plot(_x, _y, label='fit')
+    plt.xlabel('Distanza [cm]')
+    plt.ylabel('Conteggi')
     plt.legend()
     plt.grid()
 

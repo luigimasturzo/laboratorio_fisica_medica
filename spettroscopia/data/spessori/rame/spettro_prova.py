@@ -6,32 +6,32 @@ import time
 import os
 import argparse
 import logging
-from scipy.optimize import curve_fit                                                     
-logging.basicConfig(level=logging.INFO)    
+from scipy.optimize import curve_fit
+logging.basicConfig(level=logging.INFO)
 
 
-_description = 'analize gamma ray spectrum ' 
+_description = 'analize gamma ray spectrum '
 
 
 def sottrazione_fondo(file_path,source_path):
    data=np.loadtxt(file_path,skiprows=26, usecols=[1,2,3,4,5], unpack=True)
    data=data.transpose().flatten()
-   logging.info('Done. {} data found in background file'.format(len(data))) 
+   logging.info('Done. {} data found in background file'.format(len(data)))
 
    data_source=np.loadtxt(source_path,skiprows=26, usecols=[1,2,3,4,5], unpack=True)
    data_source=data_source.transpose().flatten()
-   logging.info('Done. {} data found in source file'.format(len(data_source))) 
+   logging.info('Done. {} data found in source file'.format(len(data_source)))
 
 
-   t_source = 4005.979910          #tempo exp. sorgente
-   t_fondo = 51600.458847         #tempo exp. fondo         
+   t_source = 2100.359953          #tempo exp. sorgente
+   t_fondo = 51600.458847         #tempo exp. fondo
    data=(t_source/t_fondo)*data
 
    data_fin=data_source-data
    data_zero=np.zeros(len(data_fin))
    data_fin=np.where(data_fin>=0 , data_fin, data_zero )
 
-   
+
 
    x=np.linspace(0,2050,2050)
 
@@ -42,7 +42,7 @@ def sottrazione_fondo(file_path,source_path):
    plt.grid()
    plt.legend()
 
-   '''def covell(m, first_extreme, last_extreme, y):
+   def covell(m, first_extreme, last_extreme, y):
       c_a=y[first_extreme]
       c_b=y[last_extreme]
       n=last_extreme-first_extreme
@@ -50,7 +50,7 @@ def sottrazione_fondo(file_path,source_path):
          f_covell=((c_a+c_b)/2)*n
          area_netta=sum(y[first_extreme:last_extreme])-f_covell
          print(sum(y[first_extreme:last_extreme]))
-         
+
          print('n_channels = {}, f_covell = {}, net_area_value = {}'.format(n, f_covell, area_netta))
          return area_netta
       elif (m<=10 and m>=5):
@@ -60,19 +60,29 @@ def sottrazione_fondo(file_path,source_path):
          m_f=(1/m)*sum(y[last_extreme:last_extreme+m])
          f_canali=((m_i+m_f)/2)*n
          area_netta=sum(y[first_extreme:last_extreme])-f_canali
-         print('n_value = {}, f_covell_ch = {}, net_area_value = {}'.format(n, f_canali, area_netta))
+         varianza=np.sqrt(sum(y[first_extreme:last_extreme])+f_canali*n/(2*m))
+         print('n_value = {}, f_covell_ch = {}, net_area_value = {} +/- {}'.format(n, f_canali, area_netta, varianza))
          return area_netta
       else:
          print('There is an error, m_value must be between 5 and 10!!!')
-   
 
-   area=covell(10,763,1063,data_fin)'''
 
-   
-   
-   
+   area=covell(10,889,1012,data_fin)
+
+#cesio1moneta, chi2 890-980, covell 848-1036
+#cesio2monete, chi2 896-996, covell 853-1036
+#cesio3monete, chi2 896-996, covell 852-1040
+#cesio4monete, chi2 894-996, covell 851-1043
+#cesio5monete chi2 910-996, covell
+
+#cesio1moneta, chi2 910-996, covell 883-1000
+#cesio2monete, chi2 896-996, covell 886-1004
+#cesio3monete, chi2 896-996, covell 887-1007
+#cesio4monete, chi2 894-996, covell 887-1007
+#cesio5monete chi2 910-996, covell 889-1012
+
    '''for k in range(0,10):
-   
+
       proviamolo=[]
       for i in range (5,11):
          cacca1=covell(i, 800, 1063, data_fin)
@@ -86,7 +96,7 @@ def sottrazione_fondo(file_path,source_path):
 
 
 
-   
+
    #fitting...
    ''' indico con primo e secondo estremo gli estremi su cui voglio fare il fit
    '''
@@ -94,8 +104,8 @@ def sottrazione_fondo(file_path,source_path):
    #americio->30-80
    #cobalto->1590-1730
 
-   primo_ext=1800
-   secondo_ext=1995
+   primo_ext=910
+   secondo_ext=996
    diff=secondo_ext-primo_ext
 
    ydata = data_fin[primo_ext:secondo_ext]
@@ -103,7 +113,7 @@ def sottrazione_fondo(file_path,source_path):
    def gaussian(x, a, mu, sigma):
       return a/(sigma*np.sqrt(2*np.pi))*(np.exp(-np.power(x - mu, 2.) / (2 * np.power(sigma, 2.))))
 
-   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[11000,1873,30])
+   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[11000,950,30])
    print(' i parametri stimati sono (a, mu, sigma)',popt)
    print(' i parametri stimati sono a = {} , mu =  {}, sigma = {}'.format(popt[0],popt[1],popt[2]))
 

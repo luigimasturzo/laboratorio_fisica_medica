@@ -6,36 +6,36 @@ import time
 import os
 import argparse
 import logging
-from scipy.optimize import curve_fit                                                     
-logging.basicConfig(level=logging.INFO)    
+from scipy.optimize import curve_fit
+logging.basicConfig(level=logging.INFO)
 
 
-_description = 'analize gamma ray spectrum ' 
+_description = 'analize gamma ray spectrum '
 
 
 def sottrazione_fondo(file_path,source_path):
    data=np.loadtxt(file_path,skiprows=26, usecols=[1,2,3,4,5], unpack=True)
    data=data.transpose().flatten()
-   logging.info('Done. {} data found in background file'.format(len(data))) 
+   logging.info('Done. {} data found in background file'.format(len(data)))
 
    data_source=np.loadtxt(source_path,skiprows=26, usecols=[1,2,3,4,5], unpack=True)
    data_source=data_source.transpose().flatten()
-   logging.info('Done. {} data found in source file'.format(len(data_source))) 
+   logging.info('Done. {} data found in source file'.format(len(data_source)))
 
 
    t_source = 1555.319965          #tempo exp. sorgente
-   t_fondo = 51600.458847         #tempo exp. fondo         
+   t_fondo = 51600.458847         #tempo exp. fondo
    data=(t_source/t_fondo)*data
 
    #serve per il file con spessore da 10, per risalcare il tempo
-   t_sorgente_prova=3251.739927
-   data_source=data_source*(t_source/t_sorgente_prova)
+   #t_sorgente_prova=3251.739927
+   #data_source=data_source*(t_source/t_sorgente_prova)
 
    data_fin=data_source-data
    data_zero=np.zeros(len(data_fin))
    data_fin=np.where(data_fin>=0 , data_fin, data_zero )
 
-   
+
 
    x=np.linspace(0,2050,2050)
 
@@ -55,7 +55,7 @@ def sottrazione_fondo(file_path,source_path):
          area_netta=sum(y[first_extreme:last_extreme])-f_covell
          print(sum(y[first_extreme:last_extreme]))
          varianza=np.sqrt(sum(y[first_extreme:last_extreme])+f_canali*n/2)
-         
+
          print('n_channels = {}, f_covell = {}, net_area_value = {} +/- {}'.format(n, f_covell, area_netta, varianza))
          return area_netta
       elif (m<=10 and m>=5):
@@ -70,15 +70,15 @@ def sottrazione_fondo(file_path,source_path):
          return area_netta
       else:
          print('There is an error, m_value must be between 5 and 10!!!')
-   
+
 
    area=covell(10,834,1020,data_fin)
 
-   
-   
-   
+
+
+
    '''for k in range(0,10):
-   
+
       proviamolo=[]
       for i in range (5,11):
          cacca1=covell(i, 800, 1063, data_fin)
@@ -92,7 +92,7 @@ def sottrazione_fondo(file_path,source_path):
 
 
 
-   
+
    #fitting...
    ''' indico con primo e secondo estremo gli estremi su cui voglio fare il fit
    '''
