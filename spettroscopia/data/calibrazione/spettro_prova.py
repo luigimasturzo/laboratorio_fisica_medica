@@ -18,12 +18,12 @@ def sottrazione_fondo(file_path,source_path):
    data=data.transpose().flatten()
    logging.info('Done. {} data found in background file'.format(len(data)))
 
-   data_source=np.loadtxt(source_path,skiprows=16, unpack=True)
-   #data_source=data_source.transpose().flatten()
+   data_source=np.loadtxt(source_path,skiprows=26, usecols=[1,2,3,4,5], unpack=True)
+   data_source=data_source.transpose().flatten()
    logging.info('Done. {} data found in source file'.format(len(data_source)))
 
 
-   t_source = 3097.20         #tempo exp. sorgente
+   t_source =  571.479987       #tempo exp. sorgente
    t_fondo = 51600.458847         #tempo exp. fondo
    data=(t_source/t_fondo)*data
 
@@ -42,13 +42,20 @@ def sottrazione_fondo(file_path,source_path):
    plt.ylabel('Conteggi')
    plt.grid()
    plt.legend()'''
-   #plt.figure('Dati_Fondo')
-   plt.figure('Dati_Sorgente-Fondo')
-   plt.plot(x/1.43894143,data_fin, label='sorgente - fondo', color='blue')
-   #plt.plot(x/1.43894143,data, label='fondo', alpha=1., color='red')
-   #plt.plot(x/1.43894143,data_source,label='sorgente', alpha=1., color='purple')
-   plt.xlabel('Energia [Chn]')
+   plt.figure('Dati_Fondo')
+   plt.plot(x/1.43894143,data, label='fondo', alpha=1., color='red')
+   plt.xlabel('Energia [keV]')
    plt.ylabel('Conteggi')
+   plt.title('Spettro del fondo')
+   plt.grid()
+   plt.legend()
+   plt.figure('Dati_Sorgente-Fondo')
+   plt.plot(x/1.43653343,data, label='fondo', alpha=0.3, color='red')
+   plt.plot(x/1.43653343,data_source,label='sorgente', alpha=0.3, color='purple')
+   plt.plot(x/1.43653343,data_fin, label='sorgente - fondo', color='blue')
+   plt.xlabel('Energia [keV]')
+   plt.ylabel('Conteggi')
+   plt.title('Spettro raggi gamma Americio241')
    plt.grid()
    plt.legend()
 
@@ -107,8 +114,8 @@ def sottrazione_fondo(file_path,source_path):
    #americio->30-80
    #cobalto->1590-1730
 
-   '''primo_ext=890
-   secondo_ext=980
+   '''primo_ext=1750
+   secondo_ext=1890
    diff=secondo_ext-primo_ext
 
    ydata = data_fin[primo_ext:secondo_ext]
@@ -116,7 +123,7 @@ def sottrazione_fondo(file_path,source_path):
    def gaussian(x, a, mu, sigma):
       return a/(sigma*np.sqrt(2*np.pi))*(np.exp(-np.power(x - mu, 2.) / (2 * np.power(sigma, 2.))))
 
-   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[11000,933.62,29])
+   popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[7000,1800,50])
    print(' i parametri stimati sono (a, mu, sigma)',popt)
    print(' i parametri stimati sono a = {} , mu =  {}, sigma = {}'.format(popt[0],popt[1],popt[2]))
 
@@ -126,8 +133,9 @@ def sottrazione_fondo(file_path,source_path):
    _x = np.linspace(primo_ext, secondo_ext, diff)
    _y = gaussian(_x, *popt)
    plt.figure('fit')
-   plt.plot(x,data_fin, label='sorgente-fondo', alpha=0.8)
-   plt.plot(_x, _y, label='fit')
+   plt.plot(x,data_fin, label='Sorgente-Fondo', alpha=0.8)
+   plt.title('Spettro raggi gamma Americio241')
+   plt.plot(_x, _y, label='fit_gauss')
    plt.xlabel(' Canali ')
    plt.ylabel(' Conteggi ')
    plt.legend()
@@ -137,9 +145,8 @@ def sottrazione_fondo(file_path,source_path):
    chi2 = sum(((ydata[mask] - gaussian(xdata[mask], *popt)) / np.sqrt(ydata[mask]))**2.)
    nu = mask.sum() - 3
    sigma = np.sqrt(2 * nu)
-   print('chi2_norm = {} , dof = {}, incetezza chi2 = {}'.format(chi2/nu, nu, sigma/nu))
+   print('chi2_norm = {} , dof = {}, incetezza chi2 = {}'.format(chi2/nu, nu, sigma/nu))'''
 
-'''
 
 
 

@@ -14,10 +14,10 @@ logging.basicConfig(level=logging.INFO)
 
 #x=np.array([60,511,662,1174,1274,1332])   #americio,sodio, cesio, cobalto, sodio, cobalto
 x=np.array([59.5409,511,662,1174,1274,1332])
-y=np.array([55.19,722.83,933.62,1651.43,1805.08,1874.03])
-sigma_y=np.array([10.62,28.10,29.46,43.09,40.98,41.98])
-usigma=np.array([0.8,0.3,0.3,0.4,0.4,0.3])
-umu=np.array([0.8,0.2,0.2,0.3,0.4,0.3])
+y=np.array([59.09,723.21,933.62,1651.76,1805.36,1874.26])
+sigma_y=np.array([7.26,26.03,29.46,42.40,40.66,41.46])
+usigma=np.array([0.78,0.80,0.36,0.60,0.67,0.74])
+umu=np.array([0.28,0.41,0.28,0.41,0.57,0.47])
 
 urisoluzione=2.35*np.sqrt((usigma/y)**2 + (sigma_y*umu/(y**2))**2)
 #urisoluzione=np.log(urisoluzione)
@@ -44,17 +44,18 @@ print('chi2lin= {}'.format(chi21/4))
 #Risoluzione enrgetica = 2.36*sigma/mu
 risoluzione=2.35*sigma_y/y
 #risoluzione=np.log(risoluzione)
-#x=np.log(x)
+#urisoluzione=np.log(urisoluzione)/risoluzione
+#y=np.log(y)
 def rad(y, m, a):
     return m/(y**a)
 def rad2(y, m, a):
     return m*y+a
 
-popt, pcov = curve_fit(rad, y, risoluzione,sigma=urisoluzione ,p0=[3.2,0.5])
+popt, pcov = curve_fit(rad, y, risoluzione,sigma=urisoluzione ,p0=[3,0.5])
 print(' i parametri trovati sono ( emmm , aaa )',popt)
 print(' le relative incertezze sono di ',np.sqrt(pcov.diagonal()))
 plt.figure('risoluzione enrgetica')
-_x = np.linspace(1, 2000, 2050)
+_x = np.linspace(10, 2000, 1980)
 _y = rad(_x, *popt)
 #plt.yscale('log')
 plt.plot(_x, _y, label ='fit', alpha=0.8)

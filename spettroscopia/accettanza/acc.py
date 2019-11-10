@@ -6,8 +6,8 @@ import time
 import os
 import argparse
 import logging
-from scipy.optimize import curve_fit                                                     
-logging.basicConfig(level=logging.INFO)    
+from scipy.optimize import curve_fit
+logging.basicConfig(level=logging.INFO)
 
 class Rivelatore_cilindrico:
     def __init__(self, name, radius, distance, lunghezza):
@@ -72,7 +72,7 @@ class Sorgente:
         else:
             print('la sorgente di {} ha una attività di {} KBq, una emivita di {} ed emette con energia di {} Kev e di {} Kev'.format(self.name,self.activity,self.emilife,self.energy1,self.energy2))
 
-    
+
 
     def N_particles(self, time):
         tau=self.emilife/(np.log(2))
@@ -98,9 +98,9 @@ def efficienza_intrinseca(m,n,d,r,l):     #esiste di sicuro una cosa piu efficie
             #faccio lo smearing sulle misure di lunghezza
 
 
-            R = r + 0.01 * (1-2*random.random())
+            R = r + 0.005 * (1-2*random.random())
             L = l + 0.1 * (1-2*random.random())
-            D = d + 0.01 * (1-2*random.random())
+            D = d + 0.005 * (1-2*random.random())
             theta_max=np.arctan((R)/(L+D))
             phi_max=np.arctan((R)/(L+D))
 
@@ -112,7 +112,7 @@ def efficienza_intrinseca(m,n,d,r,l):     #esiste di sicuro una cosa piu efficie
             prova_phi=np.where(phi >= (np.pi)/2 - phi_max , phi, phi_zero )
             phi_pass=np.where(phi <= (np.pi)/2 + phi_max , prova_phi, phi_zero )
 
-            
+
             vagone_finale=theta_pass+phi_pass
             mask_fin=vagone_finale>2*((np.pi)/2 - theta_max)
             x.append(len(vagone_finale[mask_fin])/(2*n))
@@ -124,7 +124,7 @@ def efficienza_intrinseca(m,n,d,r,l):     #esiste di sicuro una cosa piu efficie
         x=np.asarray(x)
 
         plt.figure('histo_accettanza m = {}'.format(m))
-    
+
         ydata, edges, _ = plt.hist(x, bins=20, density=True)
         xdata = 0.5 * (edges[1:] + edges[:-1])
 
@@ -132,7 +132,7 @@ def efficienza_intrinseca(m,n,d,r,l):     #esiste di sicuro una cosa piu efficie
         def gaussian(x, a, mu, sigma):
             return a/(sigma*np.sqrt(2*np.pi))*(np.exp(-np.power(x - mu, 2.) / (2 * np.power(sigma, 2.))))
 
-        popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[100,0.00075, 0.00001])
+        popt, pcov = curve_fit(gaussian, xdata, ydata, p0=[300000,0.0003, 0.00001])
         print(' i parametri trovati sono (a, mu, sigma)',popt)
         print(' le relative incertezze sono di ',np.sqrt(pcov.diagonal()))
         print(1/popt[1])
@@ -140,13 +140,17 @@ def efficienza_intrinseca(m,n,d,r,l):     #esiste di sicuro una cosa piu efficie
         _y = gaussian(_x, *popt)
         #plt.figure('gauss_fit')
         plt.plot(_x, _y)
+        plt.xlabel('Accettanza')
+        plt.ylabel('a_u')
+        plt.title('Accettanza geometrica')
+        plt.grid()
 
         mask = ydata > 0
         chi2 = sum(((ydata[mask] - gaussian(xdata[mask], *popt)) / np.sqrt(ydata[mask]))**2.)
         nu = mask.sum() - 3
         sigma = np.sqrt(2 * nu)
         print('chi2, dof, incetezza chi2',chi2, nu, sigma)
-    
+
     else:
         #print (len(vagone_finale[mask_fin])/(2*n))
         #print (len(vagone_finale[mask_fin])/(n))
@@ -156,26 +160,15 @@ def efficienza_intrinseca(m,n,d,r,l):     #esiste di sicuro una cosa piu efficie
         #plt.hist(theta, bins=200)
         #return(len(vagone_finale[mask_fin])/n)
         return(len(vagone_finale[mask_fin])/(2*n))
-        
 
 
 
-        
+
+
 
 if __name__ == '__main__':
-    NaI = Rivelatore_cilindrico('NaI',0.25,8,1.7)
+    NaI = Rivelatore_cilindrico('NaI',0.25,7.945,1.67)
     #Cs137=Sorgente('Cesio_137', 53.9, 952092792, 662, 0)
     accettanza=efficienza_intrinseca(10**4,10**6,NaI.distance,NaI.radius,NaI.lunghezza)
 
     plt.show()
-
-
-    
-
-
-
-
-
-
-
-    
